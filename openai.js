@@ -1,4 +1,4 @@
-const OPENAI_KEY = "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";
+const OPENAI_KEY = "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";
 
 async function gerarQuizComIA(conteudoPDF, onLinhaGerada = () => {}) {
   const prompt = `
