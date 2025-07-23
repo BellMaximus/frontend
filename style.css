@@ -23,3 +23,47 @@ button {
   font-weight: bold;
   cursor: pointer;
 }
+.quiz-container {
+  max-width: 600px;
+  margin: auto;
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+#pergunta {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+#opcoes button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  background: #334155;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+#opcoes button:hover {
+  background: #475569;
+}
+
+.hidden {
+  display: none;
+}
+
+.checkout-button {
+  background: #22c55e;
+  padding: 12px 20px;
+  color: #000;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 20px;
+}
