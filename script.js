@@ -127,7 +127,14 @@ async function tentarNovamente() {
 
   try {
     const respostaIA = await gerarQuiz(textoExtraidoGlobal);
-    const quiz = converterTextoParaQuiz(respostaIA);
+    const quiz = await gerarQuiz(textoExtraidoGlobal);
+
+console.log("📦 Resposta bruta da IA:", quiz); // ⬅️ Adicione isso
+
+if (!quiz || !quiz.includes("Pergunta")) {
+  throw new Error("A IA não conseguiu gerar um quiz válido a partir do seu PDF.");
+}
+
 
     if (quiz.perguntas.length === 0) throw new Error("Quiz vazio.");
 
