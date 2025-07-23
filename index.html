@@ -3,21 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gerador de Quiz com IA</title>
- 
+  <title>Gerador de Quiz por IA ⚡</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Quiz Generator 🔥</h1>
-  <p>Digite aqui o conteúdo ou prompt baseado no seu PDF:</p>
-  <textarea id="input"></textarea>
-  <br>
-  <button onclick="gerar()">Gerar Quiz com IA</button>
+  <div class="container">
+    <h1>📘 Gerador de Quiz a partir de PDF</h1>
 
-  <div id="loading">⌛ Gerando quiz com IA...</div>
-  <div class="erro" id="erro"></div>
-  <pre id="output"></pre>
+    <input type="file" id="pdfInput" accept="application/pdf" />
 
-  <script src="openai.js"></script>
-  <script src="script.js"></script>
+    <div id="terminal" class="terminal">
+      <span class="digitando">👩‍💻 Aguardando upload do conteúdo...</span>
+    </div>
+
+    <div id="erro-container" class="erro hidden">
+      <h2>❌ Erro ao gerar o quiz</h2>
+      <p id="erro-texto">A IA não conseguiu gerar um quiz válido a partir do seu PDF. Você pode tentar novamente.</p>
+      <button onclick="location.reload()">🔁 Tentar novamente</button>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
