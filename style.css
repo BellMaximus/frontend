@@ -137,5 +137,35 @@ button {
     box-shadow: 0 0 15px #0f0;
   }
 }
+.error-box {
+  background: #1f1f1f;
+  border: 1px solid #f43f5e;
+  color: #fda4af;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  font-family: sans-serif;
+  animation: pulseError 1.5s infinite alternate;
+}
+
+@keyframes pulseError {
+  from {
+    box-shadow: 0 0 5px #f43f5e;
+  }
+  to {
+    box-shadow: 0 0 20px #f43f5e;
+  }
+}
+
+.error-box button {
+  margin-top: 10px;
+  background: #f43f5e;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
 
