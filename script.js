@@ -34,17 +34,14 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
 const quiz = await gerarQuizComIA(fullText);
 
 if (quiz) {
-  console.log("Quiz gerado:", quiz);
-  status.innerText = "Quiz gerado com sucesso!";
-  // aqui podemos redirecionar para a etapa do quiz
+  const checkoutLink = document.getElementById("checkout").value;
 
-  if (quiz) {
   localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
-  localStorage.setItem("quizfunil_checkout", "https://quizpdf.vercel.app/"); // ou você define dinamicamente depois
+  localStorage.setItem("quizfunil_checkout", checkoutLink);
 
-  // redireciona para o quiz
   window.location.href = "quiz.html";
 }
+
 
 }
 
