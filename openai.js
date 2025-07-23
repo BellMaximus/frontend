@@ -2,23 +2,23 @@ const OPENAI_KEY = "sk-proj-osA3WLOO9HVjYvhQ1d-t-v8d5DTFXgMs7MGXWJoeJLSmtaOCDz5R
 
 async function gerarQuizComIA(conteudoPDF, onLinhaGerada = () => {}) {
   const prompt = `
-Aja como um gerador de quiz. Responda estritamente em JSON.
+Você é um gerador de quiz automático. Sua única função é retornar um ARRAY JSON puro.
 
-Gere de 3 a 7 perguntas com 4 opções cada, baseadas no conteúdo abaixo. A estrutura deve ser exatamente esta:
+Baseado no conteúdo abaixo, gere de 3 a 7 perguntas no seguinte formato JSON:
 
 [
   {
-    "pergunta": "Texto da pergunta",
-    "opcoes": ["opção A", "opção B", "opção C", "opção D"],
-    "resposta": "Texto da resposta correta"
+    "pergunta": "Qual é o objetivo principal do conteúdo?",
+    "opcoes": ["Opção A", "Opção B", "Opção C", "Opção D"],
+    "resposta": "Opção correta"
   }
 ]
 
-Não adicione nenhum texto antes ou depois do JSON. Apenas retorne o JSON limpo, sem explicações.
+⚠️ IMPORTANTE: NÃO escreva nada antes ou depois do JSON. NÃO explique. NÃO use markdown. Apenas retorne o JSON válido.
 
 Conteúdo base:
 """
-${conteudoPDF.slice(0, 4000)}
+${conteudoPDF.slice(0, 3500)}
 """
 `;
 
@@ -32,6 +32,7 @@ ${conteudoPDF.slice(0, 4000)}
       model: "gpt-3.5-turbo",
       stream: true,
       messages: [{ role: "user", content: prompt }],
+      temperature: 0.4,
     }),
   });
 
@@ -67,15 +68,15 @@ ${conteudoPDF.slice(0, 4000)}
   try {
     terminalTyping(full);
 
-    // limpar texto fora do JSON, se houver
+    // capturar só o JSON dentro de colchetes
     let limpo = full.trim();
-    const match = limpo.match(/\[.*\]/s);
+    const match = limpo.match(/\[\s*{[^]*?}\s*]/s); // pega o primeiro array JSON
     if (match) limpo = match[0];
 
     const parsedJSON = JSON.parse(limpo);
     return parsedJSON;
   } catch (e) {
-    terminalTyping("// Erro ao gerar JSON válido 😢\n\n" + full);
+    terminalTyping("// ❌ Erro ao gerar JSON válido 😢\n\n" + full);
     return null;
   }
 }
