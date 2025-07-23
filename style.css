@@ -67,3 +67,18 @@ button {
   display: inline-block;
   margin-top: 20px;
 }
+.ia-box {
+  background: #1e293b;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  font-family: monospace;
+  text-align: left;
+  max-height: 300px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  color: #a5f3fc;
+  font-size: 14px;
+  border: 1px solid #334155;
+}
+
