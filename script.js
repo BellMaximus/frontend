@@ -52,7 +52,6 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
 
     const quiz = await gerarQuiz(fullText);
 
-
     if (quiz) {
       localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
       localStorage.setItem("quizfunil_checkout", checkoutInput);
@@ -125,7 +124,7 @@ async function tentarNovamente() {
   status.innerText = "Tentando novamente...";
   digitarLinhaIA("🔁 Gerando novamente...");
 
-  const quiz = await gerarQuiz(textoExtraidoGlobal, digitarLinhaIA);
+  const quiz = await gerarQuiz(textoExtraidoGlobal);
 
   if (quiz) {
     localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
