@@ -1,36 +1,58 @@
-// Simulação do quiz gerado via OpenAI
 const quiz = JSON.parse(localStorage.getItem("quizfunil_quiz"));
-const linkCheckout = localStorage.getItem("quizfunil_checkout") || "https://suacheckout.com";
+const checkout = localStorage.getItem("quizfunil_checkout");
 
-let index = 0;
-
-document.getElementById("total").innerText = quiz.length;
-
-function renderQuiz() {
-  if (index >= quiz.length) {
-    document.getElementById("quiz-box").classList.add("hidden");
-    document.getElementById("final").classList.remove("hidden");
-    document.getElementById("btn-checkout").href = linkCheckout;
+function renderQuiz(quiz) {
+  if (!quiz || !quiz.perguntas || !Array.isArray(quiz.perguntas)) {
+    alert("❌ Erro ao carregar o quiz. Gere novamente o PDF.");
+    document.getElementById("quiz-box").innerHTML = "<p>Erro ao carregar o quiz.</p>";
     return;
   }
 
-  const q = quiz[index];
-  document.getElementById("atual").innerText = index + 1;
-  document.getElementById("pergunta").innerText = q.pergunta;
+  let perguntaAtual = 0;
+  const total = quiz.perguntas.length;
+  const perguntaEl = document.getElementById("pergunta");
+  const opcoesEl = document.getElementById("opcoes");
+  const progressoEl = document.getElementById("progresso");
+  const atualEl = document.getElementById("atual");
+  const totalEl = document.getElementById("total");
 
-  const opcoesBox = document.getElementById("opcoes");
-  opcoesBox.innerHTML = "";
+  totalEl.textContent = total;
 
-  q.opcoes.forEach((op, i) => {
-    const btn = document.createElement("button");
-    btn.innerText = op;
-    btn.onclick = () => {
-      index++;
-      renderQuiz();
-    };
-    opcoesBox.appendChild(btn);
-  });
+  function mostrarPergunta(index) {
+    const atual = quiz.perguntas[index];
+    perguntaEl.textContent = atual.pergunta;
+    atualEl.textContent = index + 1;
+    opcoesEl.innerHTML = "";
+
+    atual.alternativas.forEach((alt, i) => {
+      const btn = document.createElement("button");
+      btn.classList.add("opcao");
+      btn.textContent = alt;
+      btn.onclick = () => {
+        if (alt.includes(atual.correta)) {
+          btn.classList.add("correta");
+        } else {
+          btn.classList.add("errada");
+        }
+
+        setTimeout(() => {
+          if (index + 1 < total) {
+            mostrarPergunta(index + 1);
+          } else {
+            document.getElementById("quiz-box").classList.add("hidden");
+            document.getElementById("final").classList.remove("hidden");
+            if (checkout) {
+              document.getElementById("btn-checkout").href = checkout;
+            }
+          }
+        }, 800);
+      };
+      opcoesEl.appendChild(btn);
+    });
+  }
+
+  mostrarPergunta(perguntaAtual);
 }
 
-renderQuiz();
-
+// Início do carregamento do quiz
+renderQuiz(quiz);
