@@ -4,6 +4,7 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const file = document.getElementById("pdf-file").files[0];
+  const checkoutInput = document.getElementById("checkout").value;
   const status = document.getElementById("status");
 
   if (!file || file.type !== "application/pdf") {
@@ -11,11 +12,17 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
     return;
   }
 
+  if (!checkoutInput.startsWith("http")) {
+    status.innerText = "Insira um link de checkout válido (com https://)";
+    return;
+  }
+
+  status.innerText = "Lendo PDF...";
+
   const reader = new FileReader();
 
   reader.onload = async function () {
     const typedarray = new Uint8Array(reader.result);
-
     const pdf = await pdfjsLib.getDocument(typedarray).promise;
 
     let fullText = "";
@@ -27,24 +34,18 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
       fullText += `\n\n[Página ${pageNum}]\n${strings}`;
     }
 
-    console.log("PDF extraído:", fullText);
-    status.innerText = "PDF lido com sucesso! Agora vamos gerar o quiz com IA.";
+    status.innerText = "Gerando quiz com IA...";
 
- // após extrair fullText:
-const quiz = await gerarQuizComIA(fullText);
+    const quiz = await gerarQuizComIA(fullText);
 
-if (quiz) {
-  const checkoutLink = document.getElementById("checkout").value;
-
-  localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
-  localStorage.setItem("quizfunil_checkout", checkoutLink);
-
-  window.location.href = "quiz.html";
-}
-
-
-}
-
+    if (quiz) {
+      localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
+      localStorage.setItem("quizfunil_checkout", checkoutInput);
+      status.innerText = "Quiz gerado com sucesso! Redirecionando...";
+      window.location.href = "quiz.html";
+    } else {
+      status.innerText = "Erro ao gerar o quiz. Tente com outro PDF.";
+    }
   };
 
   reader.readAsArrayBuffer(file);
