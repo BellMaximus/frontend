@@ -68,11 +68,11 @@ button {
   margin-top: 20px;
 }
 .ia-box {
-  background: #1e293b;
+  background: rgba(30, 41, 59, 0.8);
   margin-top: 20px;
   padding: 20px;
   border-radius: 12px;
-  font-family: monospace;
+  font-family: "Courier New", monospace;
   text-align: left;
   max-height: 300px;
   overflow-y: auto;
@@ -80,5 +80,37 @@ button {
   color: #a5f3fc;
   font-size: 14px;
   border: 1px solid #334155;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+  transition: all 0.3s ease;
+  animation: glow 2s ease-in-out infinite alternate;
 }
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.7);
+  }
+}
+
+.ia-line {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 10px;
+}
+
+.ia-line::before {
+  content: "💬";
+  position: absolute;
+  left: 0;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
 
