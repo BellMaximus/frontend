@@ -64,10 +64,23 @@ function digitarLinhaIA(texto) {
   let i = 0;
   const speed = 20;
 
-  function terminalTyping(texto) {
+  function digita() {
+    if (i < texto.length) {
+      bubble.textContent += texto.charAt(i);
+      i++;
+      setTimeout(digita, speed);
+    } else {
+      iaOutput.scrollTop = iaOutput.scrollHeight;
+    }
+  }
+
+  digita();
+}
+
+function terminalTyping(texto) {
   const terminal = document.getElementById("terminal-output");
   terminal.classList.remove("hidden");
-  terminal.innerHTML = ""; // resetar
+  terminal.innerHTML = "";
   let i = 0;
   const speed = 5;
 
@@ -82,4 +95,3 @@ function digitarLinhaIA(texto) {
 
   digita();
 }
-
