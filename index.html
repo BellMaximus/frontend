@@ -3,39 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gerador de Quiz por IA ⚡</title>
-  <link rel="stylesheet" href="style.css">
+  <title>QuizFunil™</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="pdfjs/pdf.min.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>📘 Gerador de Quiz a partir de PDF</h1>
-
-    <input type="file" id="pdfInput" accept="application/pdf" />
-    <button id="enviarBtn">🚀 Enviar para IA</button>
-
-    <!-- Terminal de processo -->
-    <div id="terminal" class="terminal hidden">
-      <pre id="terminalText">💬 Analisando conteúdo...</pre>
-    </div>
-
-    <!-- Terminal de erro JSON -->
-    <div id="erro-json" class="erro-json hidden">
-      <pre>
-// ❌ Erro ao gerar JSON válido
-🥺</pre>
-    </div>
-
-    <!-- Tela de erro geral -->
-    <div id="erro-container" class="erro hidden">
-      <h2>❌ Erro ao gerar o quiz</h2>
-      <p>A IA não conseguiu gerar um quiz válido a partir do seu PDF. Você pode tentar novamente.</p>
-      <button onclick="location.reload()">🔁 Tentar novamente</button>
-    </div>
-
-    <!-- Container para exibir quiz gerado -->
-    <div id="quiz-container" class="quiz hidden"></div>
+    <h1>🚀 Transforme seu PDF em um Quiz de Vendas</h1>
+    <form id="upload-form">
+      <input type="file" id="pdf-file" accept=".pdf" required /><br>
+      <label for="checkout">Link do seu checkout (Hotmart, Eduzz...)</label><br>
+      <input type="url" id="checkout" placeholder="https://seuproduto.com" required /><br><br>
+      <button type="submit">Enviar PDF</button>
+    </form>
+    <div id="status"></div>
+    <div id="ia-output" class="ia-box hidden"></div>
+    <div id="terminal-output" class="terminal-box hidden"></div>
   </div>
+<div id="error-box" class="error-box hidden">
+  <h3>❌ Erro ao gerar o quiz</h3>
+  <p id="error-msg">...</p>
+  <button onclick="tentarNovamente()">🔁 Tentar novamente</button>
+</div>
 
-  <script type="module" src="script.js"></script>
+  <script src="openai.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
