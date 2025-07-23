@@ -1,58 +1,105 @@
-const quiz = JSON.parse(localStorage.getItem("quizfunil_quiz"));
+const quizRaw = localStorage.getItem("quizfunil_quiz");
 const checkout = localStorage.getItem("quizfunil_checkout");
 
-function renderQuiz(quiz) {
-  if (!quiz || !quiz.perguntas || !Array.isArray(quiz.perguntas)) {
-    alert("❌ Erro ao carregar o quiz. Gere novamente o PDF.");
-    document.getElementById("quiz-box").innerHTML = "<p>Erro ao carregar o quiz.</p>";
-    return;
-  }
+let perguntas = [];
+let perguntaAtual = 0;
 
-  let perguntaAtual = 0;
-  const total = quiz.perguntas.length;
+function renderQuiz() {
+  const quizBox = document.getElementById("quiz-box");
+  const finalBox = document.getElementById("final");
   const perguntaEl = document.getElementById("pergunta");
   const opcoesEl = document.getElementById("opcoes");
-  const progressoEl = document.getElementById("progresso");
   const atualEl = document.getElementById("atual");
   const totalEl = document.getElementById("total");
 
-  totalEl.textContent = total;
+  if (!quizRaw) {
+    perguntaEl.innerText = "Erro: Nenhum quiz encontrado.";
+    return;
+  }
 
-  function mostrarPergunta(index) {
-    const atual = quiz.perguntas[index];
-    perguntaEl.textContent = atual.pergunta;
-    atualEl.textContent = index + 1;
+  try {
+    const quizTexto = JSON.parse(quizRaw);
+    perguntas = extrairPerguntas(quizTexto);
+
+    if (!perguntas || perguntas.length === 0) {
+      perguntaEl.innerText = "Erro ao interpretar o quiz gerado.";
+      return;
+    }
+
+    totalEl.innerText = perguntas.length;
+    mostrarPergunta();
+
+  } catch (e) {
+    perguntaEl.innerText = "Erro ao carregar o quiz.";
+    console.error("Erro ao parsear o quiz:", e);
+  }
+
+  function mostrarPergunta() {
+    const perguntaAtualObj = perguntas[perguntaAtual];
+    atualEl.innerText = perguntaAtual + 1;
+    perguntaEl.innerText = perguntaAtualObj.pergunta;
     opcoesEl.innerHTML = "";
 
-    atual.alternativas.forEach((alt, i) => {
+    perguntaAtualObj.opcoes.forEach((op, idx) => {
       const btn = document.createElement("button");
-      btn.classList.add("opcao");
-      btn.textContent = alt;
-      btn.onclick = () => {
-        if (alt.includes(atual.correta)) {
-          btn.classList.add("correta");
+      btn.innerText = op;
+      btn.addEventListener("click", () => {
+        if (idx === perguntaAtualObj.correta) {
+          proximaPergunta();
         } else {
-          btn.classList.add("errada");
+          alert("Ops! Resposta incorreta.");
         }
-
-        setTimeout(() => {
-          if (index + 1 < total) {
-            mostrarPergunta(index + 1);
-          } else {
-            document.getElementById("quiz-box").classList.add("hidden");
-            document.getElementById("final").classList.remove("hidden");
-            if (checkout) {
-              document.getElementById("btn-checkout").href = checkout;
-            }
-          }
-        }, 800);
-      };
+      });
       opcoesEl.appendChild(btn);
     });
   }
 
-  mostrarPergunta(perguntaAtual);
+  function proximaPergunta() {
+    perguntaAtual++;
+    if (perguntaAtual < perguntas.length) {
+      mostrarPergunta();
+    } else {
+      quizBox.classList.add("hidden");
+      finalBox.classList.remove("hidden");
+      document.getElementById("btn-checkout").href = checkout || "#";
+    }
+  }
 }
 
-// Início do carregamento do quiz
-renderQuiz(quiz);
+function extrairPerguntas(texto) {
+  const blocos = texto.split(/Pergunta\s*\d+:/i).filter(Boolean);
+  const perguntasFormatadas = [];
+
+  blocos.forEach((bloco) => {
+    const linhas = bloco.trim().split("\n").filter(l => l.trim() !== "");
+    const pergunta = linhas[0];
+
+    const opcoes = linhas.slice(1, 5).map((linha) =>
+      linha.replace(/^[A-D]\)\s*/, "").trim()
+    );
+
+    const respostaLinha = linhas.find((l) =>
+      l.toLowerCase().includes("resposta correta")
+    );
+
+    let correta = 0;
+    if (respostaLinha) {
+      const letra = respostaLinha.match(/[A-D]/i);
+      if (letra) {
+        correta = "ABCD".indexOf(letra[0].toUpperCase());
+      }
+    }
+
+    if (pergunta && opcoes.length === 4) {
+      perguntasFormatadas.push({
+        pergunta,
+        opcoes,
+        correta
+      });
+    }
+  });
+
+  return perguntasFormatadas;
+}
+
+renderQuiz();
