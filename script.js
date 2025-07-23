@@ -1,5 +1,3 @@
-import { gerarQuiz } from './openai.js';
-
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.min.js';
 
 let textoExtraidoGlobal = "";
@@ -50,14 +48,17 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
     status.innerText = "Gerando quiz com IA...";
     digitarLinhaIA("🔮 Analisando conteúdo...");
 
-    const quiz = await gerarQuiz(fullText);
+    try {
+      const respostaIA = await gerarQuiz(fullText);
+      const quiz = converterTextoParaQuiz(respostaIA);
 
-    if (quiz) {
+      if (quiz.perguntas.length === 0) throw new Error("Quiz vazio.");
+
       localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
       localStorage.setItem("quizfunil_checkout", checkoutInput);
       status.innerText = "Quiz gerado com sucesso! Redirecionando...";
       window.location.href = "quiz.html";
-    } else {
+    } catch (erro) {
       status.innerText = "Erro ao gerar quiz.";
       mostrarErro("A IA não conseguiu gerar um quiz válido a partir do seu PDF. Você pode tentar novamente.");
     }
@@ -124,15 +125,53 @@ async function tentarNovamente() {
   status.innerText = "Tentando novamente...";
   digitarLinhaIA("🔁 Gerando novamente...");
 
-  const quiz = await gerarQuiz(textoExtraidoGlobal);
+  try {
+    const respostaIA = await gerarQuiz(textoExtraidoGlobal);
+    const quiz = converterTextoParaQuiz(respostaIA);
 
-  if (quiz) {
+    if (quiz.perguntas.length === 0) throw new Error("Quiz vazio.");
+
     localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
     localStorage.setItem("quizfunil_checkout", checkoutGlobal);
     status.innerText = "Quiz gerado com sucesso! Redirecionando...";
     window.location.href = "quiz.html";
-  } else {
+  } catch (erro) {
     status.innerText = "Erro ao tentar novamente.";
     mostrarErro("Mesmo após tentar novamente, a IA não conseguiu gerar um quiz válido. Tente outro PDF ou revise o conteúdo.");
   }
+}
+
+function converterTextoParaQuiz(texto) {
+  const perguntas = [];
+  const blocos = texto.split(/\n{2,}/); // separa blocos por quebra dupla de linha
+
+  blocos.forEach(bloco => {
+    const linhas = bloco.split("\n").filter(l => l.trim() !== "");
+    if (linhas.length < 2) return;
+
+    const perguntaLinha = linhas.find(l => /^[0-9]+[)\.-]/.test(l.trim()) || l.trim().endsWith("?") || l.toLowerCase().includes("pergunta"));
+    if (!perguntaLinha) return;
+
+    const pergunta = perguntaLinha.replace(/^[0-9]+[)\.-]\s*/, "").trim();
+
+    const alternativas = linhas
+      .filter(l => /^[a-dA-D][)\.-]/.test(l.trim()))
+      .map(l => l.replace(/^[a-dA-D][)\.-]\s*/, "").trim());
+
+    const respostaCertaLinha = linhas.find(l => /resposta correta/i.test(l));
+    let correta = "";
+    if (respostaCertaLinha) {
+      const letra = respostaCertaLinha.match(/[a-dA-D]/);
+      if (letra) {
+        const idx = letra[0].toLowerCase().charCodeAt(0) - 97;
+        correta = alternativas[idx] || "";
+      }
+    }
+
+    if (pergunta && alternativas.length >= 2 && correta) {
+      perguntas.push({ pergunta, alternativas, correta });
+    }
+  });
+
+  return { perguntas };
 }
