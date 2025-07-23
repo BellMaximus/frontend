@@ -34,9 +34,13 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
       fullText += `\n\n[Página ${pageNum}]\n${strings}`;
     }
 
-    status.innerText = "Gerando quiz com IA...";
+status.innerText = "Gerando quiz com IA...";
+document.getElementById("ia-output").classList.remove("hidden");
+document.getElementById("ia-output").innerText = "🔮 Processando...";
+const quiz = await gerarQuizComIA(fullText, (linha) => {
+  document.getElementById("ia-output").innerText += "\n" + linha;
+});
 
-    const quiz = await gerarQuizComIA(fullText);
 
     if (quiz) {
       localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
