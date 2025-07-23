@@ -38,7 +38,13 @@ status.innerText = "Gerando quiz com IA...";
 document.getElementById("ia-output").classList.remove("hidden");
 document.getElementById("ia-output").innerText = "🔮 Processando...";
 const quiz = await gerarQuizComIA(fullText, (linha) => {
-  document.getElementById("ia-output").innerText += "\n" + linha;
+  const iaOutput = document.getElementById("ia-output");
+const bubble = document.createElement("div");
+bubble.classList.add("ia-line");
+bubble.textContent = linha;
+iaOutput.appendChild(bubble);
+iaOutput.scrollTop = iaOutput.scrollHeight;
+
 });
 
 
