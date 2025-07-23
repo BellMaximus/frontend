@@ -2,7 +2,7 @@
 
 export async function gerarQuiz(promptGerado) {
   try {
-    const response = await fetch("https://seu-nome.usuario.workers.dev", {
+    const response = await fetch("https://rapid-glitter-31b1.lojaavello.workers.dev/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
