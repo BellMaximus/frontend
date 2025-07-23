@@ -6,6 +6,7 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
   const file = document.getElementById("pdf-file").files[0];
   const checkoutInput = document.getElementById("checkout").value;
   const status = document.getElementById("status");
+  const iaBox = document.getElementById("ia-output");
 
   if (!file || file.type !== "application/pdf") {
     status.innerText = "Por favor, envie um arquivo PDF válido.";
@@ -18,6 +19,8 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
   }
 
   status.innerText = "Lendo PDF...";
+  iaBox.innerHTML = "";
+  iaBox.classList.remove("hidden");
 
   const reader = new FileReader();
 
@@ -34,35 +37,10 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
       fullText += `\n\n[Página ${pageNum}]\n${strings}`;
     }
 
-status.innerText = "Gerando quiz com IA...";
-document.getElementById("ia-output").classList.remove("hidden");
-document.getElementById("ia-output").innerText = "🔮 Processando...";
-const quiz = await gerarQuizComIA(fullText, (linha) => {
-  function digitarLinhaIA(texto) {
-  const iaOutput = document.getElementById("ia-output");
-  const bubble = document.createElement("div");
-  bubble.classList.add("ia-line");
-  iaOutput.appendChild(bubble);
+    status.innerText = "Gerando quiz com IA...";
+    digitarLinhaIA("🔮 Analisando conteúdo...");
 
-  let i = 0;
-  const speed = 20; // velocidade da digitação (ms por caractere)
-
-  function digita() {
-    if (i < texto.length) {
-      bubble.textContent += texto.charAt(i);
-      i++;
-      setTimeout(digita, speed);
-    } else {
-      iaOutput.scrollTop = iaOutput.scrollHeight;
-    }
-  }
-
-  digita();
-}
-
-
-});
-
+    const quiz = await gerarQuizComIA(fullText, digitarLinhaIA);
 
     if (quiz) {
       localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
@@ -76,3 +54,25 @@ const quiz = await gerarQuizComIA(fullText, (linha) => {
 
   reader.readAsArrayBuffer(file);
 });
+
+function digitarLinhaIA(texto) {
+  const iaOutput = document.getElementById("ia-output");
+  const bubble = document.createElement("div");
+  bubble.classList.add("ia-line");
+  iaOutput.appendChild(bubble);
+
+  let i = 0;
+  const speed = 20;
+
+  function digita() {
+    if (i < texto.length) {
+      bubble.textContent += texto.charAt(i);
+      i++;
+      setTimeout(digita, speed);
+    } else {
+      iaOutput.scrollTop = iaOutput.scrollHeight;
+    }
+  }
+
+  digita();
+}
