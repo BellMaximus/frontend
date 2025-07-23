@@ -37,6 +37,15 @@ if (quiz) {
   console.log("Quiz gerado:", quiz);
   status.innerText = "Quiz gerado com sucesso!";
   // aqui podemos redirecionar para a etapa do quiz
+
+  if (quiz) {
+  localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
+  localStorage.setItem("quizfunil_checkout", "https://quizpdf.vercel.app/"); // ou você define dinamicamente depois
+
+  // redireciona para o quiz
+  window.location.href = "quiz.html";
+}
+
 }
 
   };
