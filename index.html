@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QuizFunil™</title>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="style.css" />
-  <script src="pdfjs/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -20,13 +21,14 @@
     <div id="ia-output" class="ia-box hidden"></div>
     <div id="terminal-output" class="terminal-box hidden"></div>
   </div>
-<div id="error-box" class="error-box hidden">
-  <h3>❌ Erro ao gerar o quiz</h3>
-  <p id="error-msg">...</p>
-  <button onclick="tentarNovamente()">🔁 Tentar novamente</button>
-</div>
 
-<script type="module" src="openai.js"></script>
-<script type="module" src="script.js"></script>
+  <div id="error-box" class="error-box hidden">
+    <h3>❌ Erro ao gerar o quiz</h3>
+    <p id="error-msg">...</p>
+    <button onclick="tentarNovamente()">🔁 Tentar novamente</button>
+  </div>
+
+  <script type="module" src="openai.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
