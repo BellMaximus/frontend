@@ -1,1 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizFunil - Quiz</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="quiz-container">
+    <div id="quiz-box">
+      <div id="progresso">Pergunta <span id="atual">1</span> de <span id="total">0</span></div>
+      <h2 id="pergunta">Carregando pergunta...</h2>
+      <div id="opcoes"></div>
+    </div>
 
+    <div id="final" class="hidden">
+      <h2>🎉 Parabéns!</h2>
+      <p>Você concluiu o quiz. Agora é sua chance de avançar para o próximo nível:</p>
+      <a id="btn-checkout" href="#" target="_blank" class="checkout-button">🔓 Acessar a Solução Completa</a>
+    </div>
+  </div>
+
+  <script src="quiz.js"></script>
+</body>
+</html>
