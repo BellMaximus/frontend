@@ -1,5 +1,3 @@
-// openai.js
-
 export async function gerarQuiz(promptGerado) {
   try {
     const response = await fetch("https://rapid-glitter-31b1.lojaavello.workers.dev/", {
@@ -8,7 +6,6 @@ export async function gerarQuiz(promptGerado) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
         messages: [
           {
             role: "system",
@@ -23,23 +20,10 @@ export async function gerarQuiz(promptGerado) {
       })
     });
 
-    if (!response.ok) {
-      const erroTexto = await response.text();
-      throw new Error(`Erro na resposta do Worker: ${erroTexto}`);
-    }
-
     const data = await response.json();
-
-    // Se retornar erro da IA, trata aqui
-    if (data.error) {
-      throw new Error(data.error.message || "Erro desconhecido da IA");
-    }
-
-    // Retorna a mensagem gerada pela IA
     return data.choices[0].message.content;
-
-  } catch (erro) {
-    console.error("❌ Erro ao gerar quiz com IA:", erro);
-    throw erro;
+  } catch (err) {
+    console.error("Erro ao gerar quiz:", err);
+    throw err;
   }
 }
