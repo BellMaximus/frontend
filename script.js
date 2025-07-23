@@ -38,12 +38,28 @@ status.innerText = "Gerando quiz com IA...";
 document.getElementById("ia-output").classList.remove("hidden");
 document.getElementById("ia-output").innerText = "🔮 Processando...";
 const quiz = await gerarQuizComIA(fullText, (linha) => {
+  function digitarLinhaIA(texto) {
   const iaOutput = document.getElementById("ia-output");
-const bubble = document.createElement("div");
-bubble.classList.add("ia-line");
-bubble.textContent = linha;
-iaOutput.appendChild(bubble);
-iaOutput.scrollTop = iaOutput.scrollHeight;
+  const bubble = document.createElement("div");
+  bubble.classList.add("ia-line");
+  iaOutput.appendChild(bubble);
+
+  let i = 0;
+  const speed = 20; // velocidade da digitação (ms por caractere)
+
+  function digita() {
+    if (i < texto.length) {
+      bubble.textContent += texto.charAt(i);
+      i++;
+      setTimeout(digita, speed);
+    } else {
+      iaOutput.scrollTop = iaOutput.scrollHeight;
+    }
+  }
+
+  digita();
+}
+
 
 });
 
