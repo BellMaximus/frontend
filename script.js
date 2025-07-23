@@ -133,4 +133,5 @@ async function tentarNovamente() {
     status.innerText = "Erro ao tentar novamente.";
     mostrarErro("Mesmo após tentar novamente, a IA não conseguiu gerar um quiz válido. Tente outro PDF ou revise o conteúdo.");
   }
+  import { gerarQuiz } from './openai.js';
 }
