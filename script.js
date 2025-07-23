@@ -30,8 +30,15 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
     console.log("PDF extraído:", fullText);
     status.innerText = "PDF lido com sucesso! Agora vamos gerar o quiz com IA.";
 
-    // 👇 Aqui vamos enviar esse texto para o GPT na próxima etapa
-    // Ex: await gerarQuizComIA(fullText);
+ // após extrair fullText:
+const quiz = await gerarQuizComIA(fullText);
+
+if (quiz) {
+  console.log("Quiz gerado:", quiz);
+  status.innerText = "Quiz gerado com sucesso!";
+  // aqui podemos redirecionar para a etapa do quiz
+}
+
   };
 
   reader.readAsArrayBuffer(file);
