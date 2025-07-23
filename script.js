@@ -1,5 +1,8 @@
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.min.js';
 
+let textoExtraidoGlobal = "";
+let checkoutGlobal = "";
+
 document.getElementById("upload-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -21,6 +24,8 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
   status.innerText = "Lendo PDF...";
   iaBox.innerHTML = "";
   iaBox.classList.remove("hidden");
+  document.getElementById("terminal-output").classList.add("hidden");
+  document.getElementById("error-box").classList.add("hidden");
 
   const reader = new FileReader();
 
@@ -37,6 +42,9 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
       fullText += `\n\n[Página ${pageNum}]\n${strings}`;
     }
 
+    textoExtraidoGlobal = fullText;
+    checkoutGlobal = checkoutInput;
+
     status.innerText = "Gerando quiz com IA...";
     digitarLinhaIA("🔮 Analisando conteúdo...");
 
@@ -48,7 +56,8 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
       status.innerText = "Quiz gerado com sucesso! Redirecionando...";
       window.location.href = "quiz.html";
     } else {
-      status.innerText = "Erro ao gerar o quiz. Tente com outro PDF.";
+      status.innerText = "Erro ao gerar quiz.";
+      mostrarErro("A IA não conseguiu gerar um quiz válido a partir do seu PDF. Você pode tentar novamente.");
     }
   };
 
@@ -94,4 +103,34 @@ function terminalTyping(texto) {
   }
 
   digita();
+}
+
+function mostrarErro(msg) {
+  const box = document.getElementById("error-box");
+  const txt = document.getElementById("error-msg");
+  txt.innerText = msg;
+  box.classList.remove("hidden");
+}
+
+async function tentarNovamente() {
+  const status = document.getElementById("status");
+  document.getElementById("error-box").classList.add("hidden");
+  document.getElementById("terminal-output").classList.add("hidden");
+  document.getElementById("terminal-output").innerText = "";
+  document.getElementById("ia-output").innerText = "";
+
+  status.innerText = "Tentando novamente...";
+  digitarLinhaIA("🔁 Gerando novamente...");
+
+  const quiz = await gerarQuizComIA(textoExtraidoGlobal, digitarLinhaIA);
+
+  if (quiz) {
+    localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
+    localStorage.setItem("quizfunil_checkout", checkoutGlobal);
+    status.innerText = "Quiz gerado com sucesso! Redirecionando...";
+    window.location.href = "quiz.html";
+  } else {
+    status.innerText = "Erro ao tentar novamente.";
+    mostrarErro("Mesmo após tentar novamente, a IA não conseguiu gerar um quiz válido. Tente outro PDF ou revise o conteúdo.");
+  }
 }
