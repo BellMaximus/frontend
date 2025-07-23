@@ -1,4 +1,4 @@
-const OPENAI_KEY = "SUA_CHAVE_SECRETA"; // <- coloque aqui sua chave da OpenAI
+const OPENAI_KEY = "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"; // <- coloque aqui sua chave da OpenAI
 
 async function gerarQuizComIA(conteudoPDF) {
   const prompt = `
