@@ -1,0 +1,25 @@
+body {
+  font-family: sans-serif;
+  background: #0f172a;
+  color: #fff;
+  text-align: center;
+  padding: 40px;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+}
+
+input[type="file"] {
+  margin: 20px 0;
+}
+
+button {
+  padding: 10px 20px;
+  background: #22c55e;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
