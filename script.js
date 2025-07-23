@@ -1,3 +1,5 @@
+import { gerarQuiz } from './openai.js';
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.min.js';
 
 let textoExtraidoGlobal = "";
@@ -48,7 +50,8 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
     status.innerText = "Gerando quiz com IA...";
     digitarLinhaIA("🔮 Analisando conteúdo...");
 
-    const quiz = await gerarQuizComIA(fullText, digitarLinhaIA);
+    const quiz = await gerarQuiz(fullText);
+
 
     if (quiz) {
       localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
@@ -122,7 +125,7 @@ async function tentarNovamente() {
   status.innerText = "Tentando novamente...";
   digitarLinhaIA("🔁 Gerando novamente...");
 
-  const quiz = await gerarQuizComIA(textoExtraidoGlobal, digitarLinhaIA);
+  const quiz = await gerarQuiz(textoExtraidoGlobal, digitarLinhaIA);
 
   if (quiz) {
     localStorage.setItem("quizfunil_quiz", JSON.stringify(quiz));
@@ -133,5 +136,4 @@ async function tentarNovamente() {
     status.innerText = "Erro ao tentar novamente.";
     mostrarErro("Mesmo após tentar novamente, a IA não conseguiu gerar um quiz válido. Tente outro PDF ou revise o conteúdo.");
   }
-  import { gerarQuiz } from './openai.js';
 }
