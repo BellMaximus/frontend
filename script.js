@@ -9,7 +9,7 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const res = await fetch("https://SEU_BACKEND_URL", {
+  const res = await fetch("https://rapid-glitter-31b1.lojaavello.workers.dev/", {
     method: "POST",
     body: formData,
   });
