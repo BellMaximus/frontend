@@ -4,7 +4,7 @@ export async function gerarQuiz(prompt) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
         "HTTP-Referer": "https://quizpdf.vercel.app", // opcional
         "X-Title": "QuizFunil" // opcional
       },
