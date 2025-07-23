@@ -2,17 +2,19 @@ const OPENAI_KEY = "sk-proj-osA3WLOO9HVjYvhQ1d-t-v8d5DTFXgMs7MGXWJoeJLSmtaOCDz5R
 
 async function gerarQuizComIA(conteudoPDF, onLinhaGerada = () => {}) {
   const prompt = `
-Você é um gerador de quizzes com foco em marketing. Com base no conteúdo abaixo (vindo de um eBook ou PDF), crie um quiz com entre 3 e 7 perguntas de múltipla escolha, com 4 opções cada, que engajem o usuário e o preparem para uma oferta no final.
+Aja como um gerador de quiz. Responda estritamente em JSON.
 
-Formato de resposta desejado: JSON no seguinte formato:
+Gere de 3 a 7 perguntas com 4 opções cada, baseadas no conteúdo abaixo. A estrutura deve ser exatamente esta:
 
 [
   {
     "pergunta": "Texto da pergunta",
     "opcoes": ["opção A", "opção B", "opção C", "opção D"],
-    "resposta": "opção correta"
+    "resposta": "Texto da resposta correta"
   }
 ]
+
+Não adicione nenhum texto antes ou depois do JSON. Apenas retorne o JSON limpo, sem explicações.
 
 Conteúdo base:
 """
@@ -64,10 +66,16 @@ ${conteudoPDF.slice(0, 4000)}
 
   try {
     terminalTyping(full);
-    const parsedJSON = JSON.parse(full);
+
+    // limpar texto fora do JSON, se houver
+    let limpo = full.trim();
+    const match = limpo.match(/\[.*\]/s);
+    if (match) limpo = match[0];
+
+    const parsedJSON = JSON.parse(limpo);
     return parsedJSON;
   } catch (e) {
-    terminalTyping("// Erro ao gerar JSON 😢\n\n" + full);
+    terminalTyping("// Erro ao gerar JSON válido 😢\n\n" + full);
     return null;
   }
 }
