@@ -11,16 +11,29 @@
     <h1>📘 Gerador de Quiz a partir de PDF</h1>
 
     <input type="file" id="pdfInput" accept="application/pdf" />
+    <button id="enviarBtn">🚀 Enviar para IA</button>
 
-    <div id="terminal" class="terminal">
-      <span class="digitando">👩‍💻 Aguardando upload do conteúdo...</span>
+    <!-- Terminal de processo -->
+    <div id="terminal" class="terminal hidden">
+      <pre id="terminalText">💬 Analisando conteúdo...</pre>
     </div>
 
+    <!-- Terminal de erro JSON -->
+    <div id="erro-json" class="erro-json hidden">
+      <pre>
+// ❌ Erro ao gerar JSON válido
+🥺</pre>
+    </div>
+
+    <!-- Tela de erro geral -->
     <div id="erro-container" class="erro hidden">
       <h2>❌ Erro ao gerar o quiz</h2>
-      <p id="erro-texto">A IA não conseguiu gerar um quiz válido a partir do seu PDF. Você pode tentar novamente.</p>
+      <p>A IA não conseguiu gerar um quiz válido a partir do seu PDF. Você pode tentar novamente.</p>
       <button onclick="location.reload()">🔁 Tentar novamente</button>
     </div>
+
+    <!-- Container para exibir quiz gerado -->
+    <div id="quiz-container" class="quiz hidden"></div>
   </div>
 
   <script type="module" src="script.js"></script>
