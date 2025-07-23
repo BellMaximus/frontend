@@ -1,84 +1,45 @@
-const OPENAI_KEY = "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";
+// openai.js
 
-async function gerarQuizComIA(conteudoPDF, onLinhaGerada = () => {}) {
-  const prompt = `
-Você é um gerador de quiz automático. Sua única função é retornar um ARRAY JSON puro.
-
-Baseado no conteúdo abaixo, gere de 3 a 7 perguntas no seguinte formato JSON:
-
-[
-  {
-    "pergunta": "Qual é o objetivo principal do conteúdo?",
-    "opcoes": ["Opção A", "Opção B", "Opção C", "Opção D"],
-    "resposta": "Opção correta"
-  }
-]
-
-⚠️ IMPORTANTE: NÃO escreva nada antes ou depois do JSON. NÃO explique. NÃO use markdown. Apenas retorne o JSON válido.
-
-Conteúdo base:
-"""
-${conteudoPDF.slice(0, 3500)}
-"""
-`;
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${OPENAI_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      stream: true,
-      temperature: 0.4,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder("utf-8");
-
-  let full = "";
-
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) break;
-
-    const chunk = decoder.decode(value);
-    const lines = chunk.split("\n").filter(line => line.trim().startsWith("data: "));
-
-    for (const line of lines) {
-      const jsonStr = line.replace("data: ", "").trim();
-      if (jsonStr === "[DONE]") break;
-
-      try {
-        const parsed = JSON.parse(jsonStr);
-        const content = parsed.choices?.[0]?.delta?.content;
-        if (content) {
-          full += content;
-          onLinhaGerada(content);
-        }
-      } catch (e) {
-        console.error("Erro parseando stream:", e);
-      }
-    }
-  }
-
+export async function gerarQuiz(promptGerado) {
   try {
-    terminalTyping(full);
+    const response = await fetch("https://seu-nome.usuario.workers.dev", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: "Você é uma IA que gera quizzes com base em e-books, PDFs ou conteúdos de marketing. Sempre gere perguntas com alternativas A, B, C e D, com uma resposta correta clara."
+          },
+          {
+            role: "user",
+            content: promptGerado
+          }
+        ],
+        temperature: 0.7
+      })
+    });
 
-    let limpo = full.trim();
+    if (!response.ok) {
+      const erroTexto = await response.text();
+      throw new Error(`Erro na resposta do Worker: ${erroTexto}`);
+    }
 
-    // regex para extrair apenas o conteúdo entre colchetes (array JSON)
-    const match = limpo.match(/\[\s*{[^]*?}\s*]/s);
-    if (match) limpo = match[0];
+    const data = await response.json();
 
-    const parsedJSON = JSON.parse(limpo);
-    return parsedJSON;
-  } catch (e) {
-    terminalTyping("// ❌ Erro ao gerar JSON válido 😢\n\n" + full);
-    mostrarErro("A IA respondeu, mas não conseguimos converter a resposta para JSON. Tente novamente ou envie outro PDF.");
-    return null;
+    // Se retornar erro da IA, trata aqui
+    if (data.error) {
+      throw new Error(data.error.message || "Erro desconhecido da IA");
+    }
+
+    // Retorna a mensagem gerada pela IA
+    return data.choices[0].message.content;
+
+  } catch (erro) {
+    console.error("❌ Erro ao gerar quiz com IA:", erro);
+    throw erro;
   }
 }
