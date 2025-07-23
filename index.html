@@ -10,10 +10,13 @@
 <body>
   <div class="container">
     <h1>🚀 Transforme seu PDF em um Quiz que Vende</h1>
-    <form id="upload-form">
-      <input type="file" id="pdf-file" accept=".pdf" required />
-      <button type="submit">Enviar PDF</button>
-    </form>
+   <form id="upload-form">
+  <input type="file" id="pdf-file" accept=".pdf" required /><br>
+  <label for="checkout">Link do seu checkout (Hotmart, Eduzz...)</label><br>
+  <input type="url" id="checkout" placeholder="https://seuproduto.com" required /><br><br>
+  <button type="submit">Enviar PDF</button>
+</form>
+
     <div id="status"></div>
   </div>
   <script src="script.js"></script>
