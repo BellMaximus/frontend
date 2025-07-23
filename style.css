@@ -112,5 +112,30 @@ button {
   50% { opacity: 1; }
   100% { opacity: 0.5; }
 }
+.terminal-box {
+  background-color: #0a0a0a;
+  color: #00ff90;
+  font-family: monospace;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  text-align: left;
+  font-size: 13px;
+  box-shadow: 0 0 12px rgba(0, 255, 144, 0.25);
+  border: 1px solid #0f0;
+  white-space: pre-wrap;
+  animation: pulseTerminal 2s infinite ease-in-out alternate;
+}
+
+@keyframes pulseTerminal {
+  from {
+    box-shadow: 0 0 5px #0f0;
+  }
+  to {
+    box-shadow: 0 0 15px #0f0;
+  }
+}
 
 
