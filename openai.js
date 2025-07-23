@@ -1,8 +1,6 @@
-// openai.js
-
-export async function gerarQuiz(promptGerado) {
+async function gerarQuiz(promptGerado) {
   try {
-    const response = await fetch("https://rapid-glitter-31b1.lojaavello.workers.dev/", {
+    const response = await fetch("https://SEU-NOME.usuario.workers.dev", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -12,7 +10,7 @@ export async function gerarQuiz(promptGerado) {
         messages: [
           {
             role: "system",
-            content: "Você é uma IA que gera quizzes com base em e-books, PDFs ou conteúdos de marketing. Sempre gere perguntas com alternativas A, B, C e D, com uma resposta correta clara."
+            content: "Você é uma IA que gera quizzes baseados em PDFs ou e-books de marketing. Crie perguntas com 4 opções e destaque a correta."
           },
           {
             role: "user",
@@ -24,22 +22,20 @@ export async function gerarQuiz(promptGerado) {
     });
 
     if (!response.ok) {
-      const erroTexto = await response.text();
-      throw new Error(`Erro na resposta do Worker: ${erroTexto}`);
+      const erro = await response.text();
+      throw new Error("Erro: " + erro);
     }
 
     const data = await response.json();
 
-    // Se retornar erro da IA, trata aqui
     if (data.error) {
-      throw new Error(data.error.message || "Erro desconhecido da IA");
+      throw new Error(data.error.message);
     }
 
-    // Retorna a mensagem gerada pela IA
     return data.choices[0].message.content;
 
   } catch (erro) {
-    console.error("❌ Erro ao gerar quiz com IA:", erro);
+    console.error("Erro ao gerar quiz:", erro);
     throw erro;
   }
 }
