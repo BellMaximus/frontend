@@ -1,4 +1,4 @@
-const OPENAI_KEY = "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";
+const OPENAI_KEY = "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";
 
 async function gerarQuizComIA(conteudoPDF, onLinhaGerada = () => {}) {
   const prompt = `
@@ -11,8 +11,7 @@ Formato de resposta desejado: JSON no seguinte formato:
     "pergunta": "Texto da pergunta",
     "opcoes": ["opção A", "opção B", "opção C", "opção D"],
     "resposta": "opção correta"
-  },
-  ...
+  }
 ]
 
 Conteúdo base:
@@ -63,13 +62,12 @@ ${conteudoPDF.slice(0, 4000)}
     }
   }
 
- try {
-  terminalTyping(full); // mostra JSON sendo digitado em tempo real
-  const parsedJSON = JSON.parse(full);
-  return parsedJSON;
-} catch (e) {
-  terminalTyping("// Erro ao gerar JSON válido 😢\n" + full);
-  return null;
-}
-
+  try {
+    terminalTyping(full);
+    const parsedJSON = JSON.parse(full);
+    return parsedJSON;
+  } catch (e) {
+    terminalTyping("// Erro ao gerar JSON 😢\n\n" + full);
+    return null;
+  }
 }
