@@ -1,6 +1,6 @@
 const OPENAI_KEY = "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";
 
-async function gerarQuizComIA(conteudoPDF) {
+async function gerarQuizComIA(conteudoPDF, onLinhaGerada = () => {}) {
   const prompt = `
 Você é um gerador de quizzes com foco em marketing. Com base no conteúdo abaixo (vindo de um eBook ou PDF), crie um quiz com entre 3 e 7 perguntas de múltipla escolha, com 4 opções cada, que engajem o usuário e o preparem para uma oferta no final.
 
@@ -29,20 +29,46 @@ ${conteudoPDF.slice(0, 4000)}
     },
     body: JSON.stringify({
       model: "gpt-3.5-turbo",
+      stream: true,
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
     }),
   });
 
-  const data = await response.json();
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
 
-  const texto = data.choices?.[0]?.message?.content || "";
+  let full = "";
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+
+    const chunk = decoder.decode(value);
+    const lines = chunk.split("\n").filter(line => line.trim().startsWith("data: "));
+
+    for (const line of lines) {
+      const jsonStr = line.replace("data: ", "").trim();
+      if (jsonStr === "[DONE]") break;
+
+      try {
+        const parsed = JSON.parse(jsonStr);
+        const content = parsed.choices?.[0]?.delta?.content;
+        if (content) {
+          full += content;
+          onLinhaGerada(content);
+        }
+      } catch (e) {
+        console.error("Erro parseando stream:", e);
+      }
+    }
+  }
 
   try {
-    const quiz = JSON.parse(texto);
-    return quiz;
+    const parsedJSON = JSON.parse(full);
+    return parsedJSON;
   } catch (e) {
-    console.error("Erro ao converter para JSON:", texto);
+    console.warn("Não foi possível converter direto para JSON. Texto bruto:");
+    console.warn(full);
     return null;
   }
 }
