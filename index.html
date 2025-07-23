@@ -3,28 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>QuizFunil™</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="pdfjs/pdf.min.js"></script>
+  <title>Gerador de Quiz com IA</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 30px;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-size: 14px;
+      padding: 10px;
+    }
+    button {
+      padding: 12px 20px;
+      margin-top: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    pre {
+      background: #222;
+      padding: 20px;
+      white-space: pre-wrap;
+      margin-top: 20px;
+    }
+    #loading {
+      font-family: monospace;
+      color: lime;
+      margin-top: 20px;
+      display: none;
+    }
+    .erro {
+      color: red;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🚀 Transforme seu PDF em um Quiz de Vendas</h1>
-    <form id="upload-form">
-      <input type="file" id="pdf-file" accept=".pdf" required /><br>
-      <label for="checkout">Link do seu checkout (Hotmart, Eduzz...)</label><br>
-      <input type="url" id="checkout" placeholder="https://seuproduto.com" required /><br><br>
-      <button type="submit">Enviar PDF</button>
-    </form>
-    <div id="status"></div>
-    <div id="ia-output" class="ia-box hidden"></div>
-    <div id="terminal-output" class="terminal-box hidden"></div>
-  </div>
-<div id="error-box" class="error-box hidden">
-  <h3>❌ Erro ao gerar o quiz</h3>
-  <p id="error-msg">...</p>
-  <button onclick="tentarNovamente()">🔁 Tentar novamente</button>
-</div>
+  <h1>Quiz Generator 🔥</h1>
+  <p>Digite aqui o conteúdo ou prompt baseado no seu PDF:</p>
+  <textarea id="input"></textarea>
+  <br>
+  <button onclick="gerar()">Gerar Quiz com IA</button>
+
+  <div id="loading">⌛ Gerando quiz com IA...</div>
+  <div class="erro" id="erro"></div>
+  <pre id="output"></pre>
 
   <script src="openai.js"></script>
   <script src="script.js"></script>
