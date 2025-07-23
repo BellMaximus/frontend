@@ -63,12 +63,13 @@ ${conteudoPDF.slice(0, 4000)}
     }
   }
 
-  try {
-    const parsedJSON = JSON.parse(full);
-    return parsedJSON;
-  } catch (e) {
-    console.warn("Não foi possível converter direto para JSON. Texto bruto:");
-    console.warn(full);
-    return null;
-  }
+ try {
+  terminalTyping(full); // mostra JSON sendo digitado em tempo real
+  const parsedJSON = JSON.parse(full);
+  return parsedJSON;
+} catch (e) {
+  terminalTyping("// Erro ao gerar JSON válido 😢\n" + full);
+  return null;
+}
+
 }
