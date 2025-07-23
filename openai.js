@@ -31,8 +31,8 @@ ${conteudoPDF.slice(0, 3500)}
     body: JSON.stringify({
       model: "gpt-3.5-turbo",
       stream: true,
-      messages: [{ role: "user", content: prompt }],
       temperature: 0.4,
+      messages: [{ role: "user", content: prompt }],
     }),
   });
 
@@ -68,15 +68,17 @@ ${conteudoPDF.slice(0, 3500)}
   try {
     terminalTyping(full);
 
-    // capturar só o JSON dentro de colchetes
     let limpo = full.trim();
-    const match = limpo.match(/\[\s*{[^]*?}\s*]/s); // pega o primeiro array JSON
+
+    // regex para extrair apenas o conteúdo entre colchetes (array JSON)
+    const match = limpo.match(/\[\s*{[^]*?}\s*]/s);
     if (match) limpo = match[0];
 
     const parsedJSON = JSON.parse(limpo);
     return parsedJSON;
   } catch (e) {
     terminalTyping("// ❌ Erro ao gerar JSON válido 😢\n\n" + full);
+    mostrarErro("A IA respondeu, mas não conseguimos converter a resposta para JSON. Tente novamente ou envie outro PDF.");
     return null;
   }
 }
